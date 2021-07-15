@@ -4,7 +4,7 @@
   "description": "Create, build, and run i0 projects",
   "main": "index.js",
   "bin": {
-    "i0build": "./build.js"
+    "i0build": "build.js"
   },
   "scripts": {
     "i0build": "node build.js",

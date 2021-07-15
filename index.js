@@ -19,3 +19,13 @@ if(args[0] === 'build') {
         console.log(out, der);
     })
 }
+if(args[0] === 'install') {
+    return exec(`cd ../build && npm i`, (er, out, der)=>{
+        console.log(out, der);
+    })
+}
+if(args[0] === 'run') {
+    return exec(`node ../build/index.js`, (er, out, der)=>{
+        console.log(out, der);
+    })
+}

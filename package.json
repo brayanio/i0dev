@@ -3,14 +3,12 @@
   "version": "0.1.3",
   "description": "Create, build, and run i0 projects",
   "main": "index.js",
-  "bin": {
-    "i0build": "build.js"
-  },
   "scripts": {
-    "i0build": "node build.js",
+    "i0build": "node index.js",
     "i0install": "cd build && npm i && cd ../",
     "i0run": "node build/index.js",
-    "i0update": "npm run i0build && npm run i0run"
+    "i0update": "npm run i0build && npm run i0run",
+    "i0": "npm run i0build && npm run i0install && npm run i0run"
   },
   "repository": {
     "type": "git",

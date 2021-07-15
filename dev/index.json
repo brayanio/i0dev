@@ -1,0 +1,10 @@
+{
+    "package": "ni0",
+    "title": "i0 dev",
+    "target": "http://localhost:4200",
+    "routes": {
+        "": "home",
+        "#": "home",
+        "#home": "home"
+    }
+}

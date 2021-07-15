@@ -4,9 +4,9 @@ const settings = require('./dev/index.json')
 const Path = {
     Global: __dirname,
     System: `${__dirname}/system`,
-    Project: process.cwd().replace('/dev', ''),
-    Dev: process.cwd(),
-    Build: process.cwd().replace('/dev', '/build')
+    Project: process.cwd(),
+    Dev: process.cwd() + '/dev',
+    Build: process.cwd() + '/build'
 }
 
 const DevPaths = {

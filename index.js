@@ -178,7 +178,7 @@ const loadSystems = async files => {
             let scriptText = ''
             settings.scripts.forEach(src => scriptText += `<script src="${src}"></script>\n`)
             s = s.replace('$scripts$', scriptText)
-        } else s = s.replace('$styles$', '')
+        } else s = s.replace('$scripts$', '')
         return s
     })
     await copyAndPlace(systempath('i0.js'), buildpath('www/script/i0.js'), e=>e)

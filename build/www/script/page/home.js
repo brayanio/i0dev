@@ -3,6 +3,9 @@ import Service from '../service/_service.js';
 i0.obj('home',
 `
     <h1>Home ${Service.User.Count()}</h1>
+    <p>
+        <a href="#support">Support</a>
+    </p>
     <input i0="counter" placeholder="loading...">
     <br>
     <b>Capper</b>
@@ -22,6 +25,11 @@ i0.obj('home',
         let cap = await i0.fetch('test', {caps: true, str: ui.cap.value})
         ui.cap.value = cap
         console.log('send', cap)
+    }
+},
+{
+    '[i0=cap]': {
+        'font-size': '2em'
     }
 });
 export default null;

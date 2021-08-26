@@ -1,6 +1,9 @@
 'home',
 `
     <h1>Home ${Service.User.Count()}</h1>
+    <p>
+        <a href="#support">Support</a>
+    </p>
     <input i0="counter" placeholder="loading...">
     <br>
     <b>Capper</b>
@@ -20,5 +23,10 @@
         let cap = await i0.fetch('test', {caps: true, str: ui.cap.value})
         ui.cap.value = cap
         console.log('send', cap)
+    }
+},
+{
+    '[i0=cap]': {
+        'font-size': '1.2em'
     }
 }

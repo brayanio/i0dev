@@ -7,6 +7,19 @@ let guid = (r, v) =>
 let components = {}
 let nuggetprops = {}
 
+const _applyStyle = (el, id) => {
+    const rulesObj = components[id].css
+    if(rulesObj)
+        Object.keys(rulesObj).forEach(query => {
+            const rules = Object.keys(rulesObj[query])
+            el.querySelectorAll(query).forEach(selectedElement => 
+                rules.forEach(style => 
+                    selectedElement.style[style] = rulesObj[query][style]
+                )
+            )
+        })
+}
+
 const _getNuggets = (clone, ui) => {
     Array.from(clone.querySelectorAll('[i0-nugget]')).forEach(el => {
         let props = nuggetprops[el.getAttribute('props')] || {}
@@ -28,16 +41,17 @@ const _geti0 = (clone, ui) => {
     })
 }
 
-const obj = (id, html, init) => {
+const obj = (id, html, init, css) => {
     const template = document.createElement('template')
     template.innerHTML = html
-    components[id] = {template, init}
+    components[id] = {template, init, css}
 }
 
 const load = (id, props, el) => {
     if(components[id]){
         const clone = components[id].template.content.cloneNode(true)
         const ui = {}
+        _applyStyle(clone, id)
         _geti0(clone, ui)
         _getNuggets(clone, ui)
         if(components[id].init)
@@ -53,6 +67,7 @@ const element = (html, init, el) => {
     template.innerHTML = html
     const clone = template.content.cloneNode(true)
     const ui = {}
+    _applyStyle(clone, id)
     _geti0(clone, ui)    
     if(init) init(ui)
     _getNuggets(clone, ui)

@@ -5,6 +5,7 @@
     "routes": {
         "": "home",
         "#": "home",
-        "#home": "home"
+        "#home": "home",
+        "#support": "support"
     }
 }

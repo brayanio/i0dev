@@ -1,5 +1,6 @@
 const fs = require('fs').promises
 const settings = require('./dev/index.json')
+const START = new Date()
 
 const Path = {
     Global: __dirname,
@@ -26,7 +27,12 @@ let loadWWW = async () => {
     const pages = await fs.readdir(DevPaths.Page)
     const services = await fs.readdir(DevPaths.Service)
     const styles = await fs.readdir(DevPaths.Style)
-    console.log('loadWWW', ' pages ', pages, ' components ', components, ' services ', services, ' styles ', styles)
+    console.clear()
+    console.log('i0build')
+    console.log('pages', pages)
+    console.log('components', components)
+    console.log('services', services)
+    console.log('styles', styles)
 
     const finalComponents = []
     const finalPages = []
@@ -76,7 +82,7 @@ const loadPage = async (url) => {
         + `i0.obj(${str.toString()});`
         + '\nexport default null;'
 
-    console.log('loadPage', devpath(`www/script/page/${url}`))
+    // console.log('loadPage', devpath(`www/script/page/${url}`))
 
     let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
 
@@ -92,7 +98,7 @@ const loadComponent = async (url) => {
         + `i0.obj(${str.toString()});`
         + '\nexport default null;'
 
-    console.log('loadComponent', devpath(`www/script/component/${url}`))
+    // console.log('loadComponent', devpath(`www/script/component/${url}`))
 
     let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
 
@@ -108,7 +114,7 @@ const loadService = async (url) => {
         + str.toString()
         + '\nexport default null;'
 
-    console.log('loadService', devpath(`www/script/service/${url}`))
+    // console.log('loadService', devpath(`www/script/service/${url}`))
 
     let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
 
@@ -239,6 +245,7 @@ const loadServer = async files => {
         services.forEach(url => requires += `require('./server/service/${url}');\n`)
         routes.forEach(url => requires += `require('./server/route/${url}');\n`)
         s = s.replace('$routes$', requires)
+        s = s.replace('$port$', settings.port || '4200')
         return s
     })
 
@@ -253,4 +260,6 @@ const loadServer = async files => {
         s = s.replace('"node_packages":"",', nodeText)
         return s
     })
+
+    console.log('build complete', new Date() - START)
 }

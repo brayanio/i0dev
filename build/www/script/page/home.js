@@ -29,7 +29,7 @@ i0.obj('home',
 },
 {
     '[i0=cap]': {
-        'font-size': '2em'
+        'font-size': '1.2em'
     }
 });
 export default null;

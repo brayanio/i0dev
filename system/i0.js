@@ -5,32 +5,17 @@ let guid = (r, v) =>
 
 // main ui
 let components = {}
-let nuggetprops = {}
 
-const _applyStyle = (el, id) => {
-    const rulesObj = components[id].css
-    if(rulesObj)
-        Object.keys(rulesObj).forEach(query => {
-            const rules = Object.keys(rulesObj[query])
+const _applyStyle = (el, css) => {
+    if(css)
+        Object.keys(css).forEach(query => {
+            const rules = Object.keys(css[query])
             el.querySelectorAll(query).forEach(selectedElement => 
                 rules.forEach(style => 
-                    selectedElement.style[style] = rulesObj[query][style]
+                    selectedElement.style[style] = css[query][style]
                 )
             )
         })
-}
-
-const _getNuggets = (clone, ui) => {
-    Array.from(clone.querySelectorAll('[i0-nugget]')).forEach(el => {
-        let props = nuggetprops[el.getAttribute('props')] || {}
-        let id = el.getAttribute('i0')
-        let i0El = load(el.getAttribute('i0-nugget'), props)
-        let nodeAr = Array.from(i0El.childNodes).filter(n => n.nodeName !== '#text')
-        let nodeEl = nodeAr.length === 1 ? nodeAr[0] : nodeAr
-        el.parentNode.replaceChild(i0El, el)
-        if(props.i0propdelete) delete nuggetprops[el.getAttribute('props')]
-        if(id) ui[id] = nodeEl
-    })
 }
 
 const _geti0 = (clone, ui) => {
@@ -51,9 +36,8 @@ const load = (id, props, el) => {
     if(components[id]){
         const clone = components[id].template.content.cloneNode(true)
         const ui = {}
-        _applyStyle(clone, id)
+        _applyStyle(clone, components[id].css)
         _geti0(clone, ui)
-        _getNuggets(clone, ui)
         if(components[id].init)
             components[id].init(ui, props)
 
@@ -62,27 +46,15 @@ const load = (id, props, el) => {
     }
 }
 
-const element = (html, init, el) => {
+const element = (html, init, css) => {
     const template = document.createElement('template')
     template.innerHTML = html
     const clone = template.content.cloneNode(true)
     const ui = {}
-    _applyStyle(clone, id)
+    _applyStyle(clone, css)
     _geti0(clone, ui)    
     if(init) init(ui)
-    _getNuggets(clone, ui)
-    if(el) el.parentNode.replaceChild(clone, el)
     return clone
-}
-
-const nugget = (component, props, i0Id) => {
-    let id = guid()
-    if(props) {
-        nuggetprops[id] = props
-        props.i0propdelete = props.i0propdelete || false
-    }
-    let i0attr = i0Id ? `i0="${i0Id}"` : ''
-    return `<input ${i0attr} i0-nugget="${component}" props="${id}">`
 }
 
 // routing
@@ -149,21 +121,6 @@ const onFetch = (path, body) => target
     ).then(res => res.json())
     : null
 
-// utils
-const form = el => {
-    let obj = {}
-    Array.from(el).forEach(e => {obj[e.getAttribute('i0form')] = {value: e.value, el: e}})
-
-    obj.clearForm = () => {
-        Object.values(obj).forEach(val => {
-            if(val.el && val.el.type !== 'button')
-                val.el.value = ''
-        })
-    }
-
-    return obj
-}
-
 // Broadcast
 let broadcasts = {}
 const onbroadcast = (name, fn) => {
@@ -176,20 +133,11 @@ const broadcast = (name, ...props) => {
 }
 const emptybroadcast = name => broadcasts[name] = []
 
-// env
-let envData = {}
-const env = (key, val) => {
-    if(val !== undefined) envData[key] = val
-    return envData[key]
-}
-const deleteEnv = key => delete envData[key]
-
 // i0
 export default {
-    obj, load, element, nugget,
+    obj, load, element,
     router, toRoute,
     fetch: onFetch, target: str => target = str,
     broadcast, onbroadcast, emptybroadcast,
-    form, guid,
-    env, deleteEnv
+    guid
 }

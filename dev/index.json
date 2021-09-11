@@ -1,11 +1,13 @@
 {
     "package": "ni0",
     "title": "i0 dev",
+    "port":	"4200",
     "target": "http://localhost:4200",
     "routes": {
         "": "home",
         "#": "home",
         "#home": "home",
         "#support": "support"
-    }
+    },
+    "node_packages": {}
 }

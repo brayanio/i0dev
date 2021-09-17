@@ -2,25 +2,28 @@ const fs = require('fs').promises
 const settings = require('./dev/index.json')
 const START = new Date()
 
+const isWin = process.platform === "win32";
+const osPath = path => isWin ? path.split('/').join('\\') : path
+
 const Path = {
     Global: __dirname,
-    System: `${__dirname}/system`,
+    System: osPath(`${__dirname}/system`),
     Project: process.cwd(),
-    Dev: process.cwd() + '/dev',
-    Build: process.cwd() + '/build'
+    Dev: process.cwd() + osPath('/dev'),
+    Build: process.cwd() + osPath('/build')
 }
 
 const DevPaths = {
-    Component: Path.Dev + '/www/script/component',
-    Page: Path.Dev + '/www/script/page',
-    Service: Path.Dev + '/www/script/service',
-    Style: Path.Dev + '/www/style',
+    Component: Path.Dev + osPath('/www/script/component'),
+    Page: Path.Dev + osPath('/www/script/page'),
+    Service: Path.Dev + osPath('/www/script/service'),
+    Style: Path.Dev + osPath('/www/style')
 }
 
-const wwwpath = e => `${Path.Dev}/www${e?'/'+e:''}`
-const devpath = e => `${Path.Dev}${e?'/'+e:''}`
-const buildpath = e => `${Path.Build}${e?'/'+e:''}`
-const systempath = e => `${Path.System}${e?'/'+e:''}`
+const wwwPath = e => osPath(`${Path.Dev}/www${e?'/'+e:''}`)
+const devPath = e => osPath(`${Path.Dev}${e?'/'+e:''}`)
+const buildPath = e => osPath(`${Path.Build}${e?'/'+e:''}`)
+const systemPath = e => osPath(`${Path.System}${e?'/'+e:''}`)
 
 let loadWWW = async () => {
     const components = await fs.readdir(DevPaths.Component)
@@ -74,7 +77,7 @@ let loadWWW = async () => {
 }
 
 const loadPage = async (url) => {
-    const str = await fs.readFile(devpath(`www/script/page/${url}`))
+    const str = await fs.readFile(devPath(`www/script/page/${url}`))
     const imp = (name, path) => `import ${name} from '${path}';\n`
     const final
         = imp('i0', '../i0.js')
@@ -82,7 +85,7 @@ const loadPage = async (url) => {
         + `i0.obj(${str.toString()});`
         + '\nexport default null;'
 
-    // console.log('loadPage', devpath(`www/script/page/${url}`))
+    // console.log('loadPage', devPath(`www/script/page/${url}`))
 
     let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
 
@@ -90,7 +93,7 @@ const loadPage = async (url) => {
 }
 
 const loadComponent = async (url) => {
-    const str = await fs.readFile(devpath(`www/script/component/${url}`))
+    const str = await fs.readFile(devPath(`www/script/component/${url}`))
     const imp = (name, path) => `import ${name} from '${path}';\n`
     const final
         = imp('i0', '../i0.js')
@@ -98,7 +101,7 @@ const loadComponent = async (url) => {
         + `i0.obj(${str.toString()});`
         + '\nexport default null;'
 
-    // console.log('loadComponent', devpath(`www/script/component/${url}`))
+    // console.log('loadComponent', devPath(`www/script/component/${url}`))
 
     let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
 
@@ -106,7 +109,7 @@ const loadComponent = async (url) => {
 }
 
 const loadService = async (url) => {
-    const str = await fs.readFile(devpath(`www/script/service/${url}`))
+    const str = await fs.readFile(devPath(`www/script/service/${url}`))
     const imp = (name, path) => `import ${name} from '${path}';\n`
     const final 
         = imp('i0', '../i0.js')
@@ -114,7 +117,7 @@ const loadService = async (url) => {
         + str.toString()
         + '\nexport default null;'
 
-    // console.log('loadService', devpath(`www/script/service/${url}`))
+    // console.log('loadService', devPath(`www/script/service/${url}`))
 
     let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
 
@@ -134,33 +137,33 @@ let interval = setInterval(async () => {
 
 const loadBuild = async files => {
     try{
-        await fs.rmdir(buildpath('www'), { recursive: true });
-        await fs.rmdir(buildpath('server'), { recursive: true });
-        await fs.unlink(buildpath('index.js'));
-        await fs.unlink(buildpath('package.json'));
+        await fs.rmdir(buildPath('www'), { recursive: true });
+        await fs.rmdir(buildPath('server'), { recursive: true });
+        await fs.unlink(buildPath('index.js'));
+        await fs.unlink(buildPath('package.json'));
     }catch(e){}
     try{
-        await fs.mkdir(buildpath())
+        await fs.mkdir(buildPath())
     }catch(e){}
-    await fs.mkdir(buildpath('www'))
-    await fs.mkdir(buildpath('www/style'))
-    await fs.mkdir(buildpath('www/script'))
-    await fs.mkdir(buildpath('www/script/component'))
-    await fs.mkdir(buildpath('www/script/page'))
-    await fs.mkdir(buildpath('www/script/service'))
+    await fs.mkdir(buildPath('www'))
+    await fs.mkdir(buildPath('www/style'))
+    await fs.mkdir(buildPath('www/script'))
+    await fs.mkdir(buildPath('www/script/component'))
+    await fs.mkdir(buildPath('www/script/page'))
+    await fs.mkdir(buildPath('www/script/service'))
     await loadSystems(files)
     files.components.forEach(component => {
-        fs.appendFile(buildpath(`www/script/component/${component.url}`), component.value)
+        fs.appendFile(buildPath(`www/script/component/${component.url}`), component.value)
     })
     files.pages.forEach(page => {
-        fs.appendFile(buildpath(`www/script/page/${page.url}`), page.value)
+        fs.appendFile(buildPath(`www/script/page/${page.url}`), page.value)
     })
     let serviceObj = {}
     files.services.forEach(service => {
-        fs.appendFile(buildpath(`www/script/service/${service.url}`), service.value)
+        fs.appendFile(buildPath(`www/script/service/${service.url}`), service.value)
         serviceObj[service.name] = {}
     })
-    fs.appendFile(buildpath(`www/script/service/_service.js`), 'export default ' + JSON.stringify(serviceObj))
+    fs.appendFile(buildPath(`www/script/service/_service.js`), 'export default ' + JSON.stringify(serviceObj))
 }
 
 const copyAndPlace = async (filePath, buildPath, aug) => {
@@ -169,7 +172,7 @@ const copyAndPlace = async (filePath, buildPath, aug) => {
 }
 
 const loadSystems = async files => {
-    await copyAndPlace(systempath('index.html'), buildpath('www/index.html'), s=>{
+    await copyAndPlace(systemPath('index.html'), buildPath('www/index.html'), s=>{
         s = s.replace('$title$', settings.title)
         const link = href => `<link href="${href}" rel="stylesheet" type="text/css" />`
         let stylesHtml = ''
@@ -187,9 +190,9 @@ const loadSystems = async files => {
         } else s = s.replace('$scripts$', '')
         return s
     })
-    await copyAndPlace(systempath('i0.js'), buildpath('www/script/i0.js'), e=>e)
+    await copyAndPlace(systemPath('i0.js'), buildPath('www/script/i0.js'), e=>e)
     files.styles.forEach(async url => {
-        await copyAndPlace(devpath(`www/style/${url}`), buildpath(`www/style/${url}`), e=>e)
+        await copyAndPlace(devPath(`www/style/${url}`), buildPath(`www/style/${url}`), e=>e)
     })
 
     // index
@@ -200,26 +203,26 @@ const loadSystems = async files => {
     index += 'import i0 from "./i0.js";\n'
     index += `i0.target('${settings.target}');\n`
     index += `i0.router(${JSON.stringify(settings.routes)});`
-    fs.appendFile(buildpath('www/script/index.js'), index)
+    fs.appendFile(buildPath('www/script/index.js'), index)
 
     loadServer(files)
 }
 
 const loadServer = async files => {
 
-    await fs.mkdir(buildpath('server'))
-    await fs.mkdir(buildpath('server/route'))
-    await fs.mkdir(buildpath('server/service'))
-    await fs.mkdir(buildpath('server/util'))
-    await copyAndPlace(systempath('guid.js'), buildpath('server/util/guid.js'), e=>e)
-    await copyAndPlace(systempath('salt.js'), buildpath('server/util/salt.js'), e=>e)
-    await copyAndPlace(systempath('server.js'), buildpath('server/util/server.js'), e=>e)
+    await fs.mkdir(buildPath('server'))
+    await fs.mkdir(buildPath('server/route'))
+    await fs.mkdir(buildPath('server/service'))
+    await fs.mkdir(buildPath('server/util'))
+    await copyAndPlace(systemPath('guid.js'), buildPath('server/util/guid.js'), e=>e)
+    await copyAndPlace(systemPath('salt.js'), buildPath('server/util/salt.js'), e=>e)
+    await copyAndPlace(systemPath('server.js'), buildPath('server/util/server.js'), e=>e)
 
     //routes
-    const routes = await fs.readdir(devpath('server/route'))
+    const routes = await fs.readdir(devPath('server/route'))
     routes.forEach(async url => {
-        const str = await fs.readFile(devpath(`server/route/${url}`))
-        copyAndPlace(systempath('route.js'), buildpath(`server/route/${url}`), s => {
+        const str = await fs.readFile(devPath(`server/route/${url}`))
+        copyAndPlace(systemPath('route.js'), buildPath(`server/route/${url}`), s => {
             s = s.replace('$route$', url.substring(0, url.length-3))
             s = s.replace('$guts$', str.toString())
             return s
@@ -227,20 +230,20 @@ const loadServer = async files => {
     })
     
     //service
-    const services = await fs.readdir(devpath('server/service'))
+    const services = await fs.readdir(devPath('server/service'))
     let servicesObj = {}
     services.forEach(url => {
         servicesObj[url.substr(0,1).toUpperCase() + url.substr(1, url.length - 4)] = {}
     })
-    fs.appendFile(buildpath('server/_service.js'), `module.exports = ${JSON.stringify(servicesObj)}`)
+    fs.appendFile(buildPath('server/_service.js'), `module.exports = ${JSON.stringify(servicesObj)}`)
     services.forEach(async url => {
-        copyAndPlace(devpath(`server/service/${url}`), buildpath(`server/service/${url}`), s => {
+        copyAndPlace(devPath(`server/service/${url}`), buildPath(`server/service/${url}`), s => {
             return "const Service = require('../_service.js');\n" + s
         })
     })
 
     //index
-    await copyAndPlace(systempath('index.js'), buildpath('index.js'), s => {
+    await copyAndPlace(systemPath('index.js'), buildPath('index.js'), s => {
         let requires = ''
         services.forEach(url => requires += `require('./server/service/${url}');\n`)
         routes.forEach(url => requires += `require('./server/route/${url}');\n`)
@@ -250,7 +253,7 @@ const loadServer = async files => {
     })
 
     // package.json
-    await copyAndPlace(systempath('package.json'), buildpath('package.json'), s => {
+    await copyAndPlace(systemPath('package.json'), buildPath('package.json'), s => {
         s = s.replace('$package$', settings.package)
         let nodeText = ''
         if(settings.node_packages)

@@ -35,8 +35,11 @@ const get = (path, fn, type) =>
   })
 
 //host www folder
-const WWW = __dirname.replace('server/util', 'www')
-const resource = path => `${WWW}/${path}`
+const isWin = process.platform === "win32";
+const osPath = path => isWin ? path.split('/').join('\\') : path
+
+const WWW = __dirname.replace('server/util', 'www').replace('server\\util', 'www')
+const resource = path => osPath(`${WWW}/${path}`)
 app.use(express.static(WWW))
 app.get('*', (req, res) => res.sendFile(resource('index.html')))
 

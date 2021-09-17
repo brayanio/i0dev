@@ -10,6 +10,10 @@
     "i0update": "npm run i0build && npm run i0run",
     "i0": "npm run i0build && npm run i0install && npm run i0run"
   },
+  "preferGlobal": true,
+  "bin": {
+    "i0": "index.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brayanio/ni0.git"

@@ -1,6 +1,6 @@
 {
-    "package": "ni0",
-    "title": "i0 dev",
+    "package": "new-i0-project",
+    "title": "New i0 Project",
     "port":	"4200",
     "target": "http://localhost:4200",
     "routes": {
@@ -9,5 +9,6 @@
         "#home": "home",
         "#support": "support"
     },
+    "styles": [],
     "node_packages": {}
 }

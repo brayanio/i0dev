@@ -15,9 +15,13 @@ const name = args[0]
 const runPath = process.cwd() + ''
 const i0Path = __dirname
 
+const project = i0Path + osPath(`/project`)
+const target = runPath + osPath(`/${name}`)
+
 const copyFolder = async (from, to) => {
-    if (!fs.existsSync(to))
-        fs.mkdirSync(to)
+    if (fs.existsSync(to)) 
+        return console.error('! i0 error: ['  + target + '] already exists.' )
+    fs.mkdirSync(to)
     fs.readdirSync(from).forEach(element => {
         if (fs.lstatSync(path.join(from, element)).isFile()) 
             fs.copyFileSync(path.join(from, element), path.join(to, element))
@@ -26,6 +30,4 @@ const copyFolder = async (from, to) => {
     })
 }
 
-const project = i0Path + osPath(`/project`)
-const target = runPath + osPath(`/${name}`)
 copyFolder(project, target)

@@ -1,4 +1,5 @@
-const fs = require('fs').promises
+const fs = require('fs')
+const path = require("path")
 const START = new Date()
 
 const isWin = process.platform === "win32";
@@ -15,13 +16,16 @@ const runPath = process.cwd() + ''
 const i0Path = __dirname
 
 const copyFolder = async (from, to) => {
-    fs.mkdir(to)
+    if (!fs.existsSync(to))
+        fs.mkdirSync(to)
     fs.readdirSync(from).forEach(element => {
         if (fs.lstatSync(path.join(from, element)).isFile()) 
             fs.copyFileSync(path.join(from, element), path.join(to, element))
         else 
-            copyFolderSync(path.join(from, element), path.join(to, element))
+            copyFolder(path.join(from, element), path.join(to, element))
     })
 }
 
-copyFolder(i0Path, runPath + osPath(`/${name}`))
+const project = i0Path + osPath(`/project`)
+const target = runPath + osPath(`/${name}`)
+copyFolder(project, target)

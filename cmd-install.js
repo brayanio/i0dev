@@ -14,9 +14,9 @@ if(last !== '/dev' && last !== '\\dev')
 const projectPath = runPath.substr(0, runPath.length - 4)
 
 const { exec } = require('child_process')
-console.log(`cd ${projectPath + osPath('/build')} && npm run i && cd ${runPath}`)
+console.log(`starting install...`)
 const child = exec(`cd ${projectPath + osPath('/build')} && npm i && cd ${runPath}`, (err, out, derr) => {
-    console.log(out)
+    console.log('install complete', new Date() - START)
 })
 
 module.exports = {}

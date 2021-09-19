@@ -1,4 +1,4 @@
-const fs = require('fs').promises
+const fs = require('fs')
 const START = new Date()
 
 const isWin = process.platform === "win32";
@@ -13,10 +13,7 @@ if(last !== '/dev' && last !== '\\dev')
 
 const projectPath = runPath.substr(0, runPath.length - 4)
 
-const settings = require(runPath + osPath('/index.json'))
-
-const { exec } = require('child_process')
-console.log(`i0: [${settings.port}] server starting`)
-const child = exec(`node ${projectPath + osPath('/build/index.js')}`, (err, out, derr) => {})
-
+const script = projectPath + osPath('/build/index.js')
+if(fs.existsSync(script))
+require(script)
 module.exports = {}

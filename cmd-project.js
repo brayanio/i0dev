@@ -31,3 +31,5 @@ const copyFolder = async (from, to) => {
 }
 
 copyFolder(project, target)
+
+console.log('project created', new Date() - START)

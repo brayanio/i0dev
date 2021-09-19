@@ -1,39 +1,57 @@
+//name of our i0 component
 'home',
+//html of our i0 component
 `
     <div class="card">
         <h1>Home</h1>
         <p>
             <a href="#support" class="link">Support</a>
         </p>
-        <p>
-            Users Online: <b i0="userCount"></b>
-        </p>
-        <input i0="counter" placeholder="loading..." class="input">
         <form class="layer">
-            <b>Capper</b>
-            <br>
-            <input i0="cap" class="input">
-            <button i0="send" class="button">Send</button>
+            <b class="header">New Todo</b>
+            <input i0="todo" class="input">
+            <button i0="create" class="button">Create</button>
         </form>
+        <div i0="todos"></div>
     </div>
 `,
-(ui, props) => {
+//oninit of our i0 component
+async (ui, props) => {
 
-    ui.userCount.innerText = Service.User.Count()
-
-    i0.load('counter-btn', 5, ui.counter)
-
-    ui.cap.onkeyup = () => ui.cap.value = ui.cap.value.toLowerCase()
-
-    ui.send.onclick = async e => {
+    //access elements in the html above with the i0 attribute with the ui object
+    //set the onclick event of the button
+    ui.create.onclick = async e => {
+        //prevent the form from refreshing the page
         e.preventDefault()
-        let cap = await i0.fetch('test', {caps: true, str: ui.cap.value})
-        ui.cap.value = cap
-        console.log('send', cap)
+        //check if the todo input has a value
+        if(ui.todo.value){
+            //access the services globally with the Service object
+            //create a todo
+            await Service.Todo.Create(ui.todo.value)
+            //empty the input value
+            ui.todo.value = ''
+        }
     }
+
+    //whenever Service.Todo broadcasts todo-update
+    i0.onbroadcast('todo-update', () => {
+        //empty the todos element of child elements
+        ui.todos.innerHTML = ''
+        //for each todo add a todo component to the todos element
+        //create a component by calling i0.load(name, props)
+        //i0.load returns an element that we add to the todos
+        Service.Todo.Todos().forEach(todo => 
+            ui.todos.appendChild( i0.load('todo', todo) )
+        )
+    })
+
+    //calling the Todo.List is going to broadcast a todo-update
+    await Service.Todo.List()
+
 },
+//css of our i0 component
 {
-    '[i0=cap]': {
-        'font-size': '1.2em'
+    'h1': {
+        'font-size': '2em'
     }
 }

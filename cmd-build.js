@@ -16,7 +16,7 @@ const projectPath = runPath.substr(0, runPath.length - 4)
 const Path = {
     Global: __dirname,
     Project: projectPath,
-    System: projectPath + osPath('/system'),
+    System: __dirname + osPath('/system'),
     Dev: projectPath + osPath('/dev'),
     Build: projectPath + osPath('/build')
 }

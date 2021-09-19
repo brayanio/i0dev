@@ -1,3 +1,4 @@
+let fn
 const fs = require('fs').promises
 const START = new Date()
 
@@ -284,5 +285,6 @@ const loadServer = async files => {
     })
 
     console.log('build complete', new Date() - START)
+    if (fn) fn()
 }
-module.exports = {}
+module.exports = f => fn = f

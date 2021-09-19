@@ -14,14 +14,23 @@ const name = args[0]
 
 const runPath = process.cwd() + ''
 const i0Path = __dirname
+const last = runPath.substr(runPath.length - 4, 4)
+if(last !== '/dev' && last !== '\\dev')
+    return console.error('i0 error: Command must be ran within the dev folder.')
 
-const project = i0Path + osPath(`/project`)
-const target = runPath + osPath(`/${name}`)
+const projectPath = runPath.substr(0, runPath.length - 4)
+
+const systemFolder = i0Path + osPath(`/project/system`)
+const target = projectPath + osPath(`/system`)
 
 const copyFolder = async (from, to) => {
     if (fs.existsSync(to)) 
-        return console.error('i0 error: ['  + target + '] already exists.' )
-    fs.mkdirSync(to)
+        try{ 
+            fs.rmdirSync(to, { recursive: true }) 
+            fs.unlinkSync(to) 
+        } catch(e){}
+    if (!fs.existsSync(to)) 
+        fs.mkdirSync(to)
     fs.readdirSync(from).forEach(element => {
         if (fs.lstatSync(path.join(from, element)).isFile()) 
             fs.copyFileSync(path.join(from, element), path.join(to, element))
@@ -30,6 +39,6 @@ const copyFolder = async (from, to) => {
     })
 }
 
-copyFolder(project, target)
+copyFolder(systemFolder, target)
 
-console.log('project created', new Date() - START)
+console.log('project updated', new Date() - START)

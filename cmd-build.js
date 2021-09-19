@@ -25,7 +25,8 @@ const DevPaths = {
     Component: Path.Dev + osPath('/www/script/component'),
     Page: Path.Dev + osPath('/www/script/page'),
     Service: Path.Dev + osPath('/www/script/service'),
-    Style: Path.Dev + osPath('/www/style')
+    Style: Path.Dev + osPath('/www/style'),
+    Asset: Path.Dev + osPath('/www/asset')
 }
 
 const wwwPath = e => osPath(`${Path.Dev}/www${e?'/'+e:''}`)
@@ -40,12 +41,14 @@ let loadWWW = async () => {
     const pages = await fs.readdir(DevPaths.Page)
     const services = await fs.readdir(DevPaths.Service)
     const styles = await fs.readdir(DevPaths.Style)
+    const assets = await fs.readdir(DevPaths.Asset)
     console.clear()
     console.log('i0build')
-    console.log('pages', pages)
-    console.log('components', components)
-    console.log('services', services)
-    console.log('styles', styles)
+    console.log('pages', pages.length)
+    console.log('components', components.length)
+    console.log('services', services.length)
+    console.log('styles', styles.length)
+    console.log('assets', assets.length)
 
     const finalComponents = []
     const finalPages = []
@@ -74,7 +77,7 @@ let loadWWW = async () => {
             components: finalComponents, 
             pages: finalPages, 
             services: finalServices,
-            styles
+            styles, assets
         } : {error: 'loading'}
         return {error: 'loading'}
     }
@@ -82,7 +85,7 @@ let loadWWW = async () => {
         components: finalComponents, 
         pages: finalPages, 
         services: finalServices,
-        styles
+        styles, assets
     }
 }
 
@@ -144,7 +147,6 @@ let interval = setInterval(async () => {
     }
 }, 100)
 
-
 const loadBuild = async files => {
     try{
         await fs.rmdir(buildPath('www'), { recursive: true });
@@ -156,6 +158,7 @@ const loadBuild = async files => {
         await fs.mkdir(buildPath())
     }catch(e){}
     await fs.mkdir(buildPath('www'))
+    await fs.mkdir(buildPath('www/asset'))
     await fs.mkdir(buildPath('www/style'))
     await fs.mkdir(buildPath('www/script'))
     await fs.mkdir(buildPath('www/script/component'))
@@ -203,6 +206,12 @@ const loadSystems = async files => {
     await copyAndPlace(systemPath('i0.js'), buildPath('www/script/i0.js'), e=>e)
     files.styles.forEach(async url => {
         await copyAndPlace(devPath(`www/style/${url}`), buildPath(`www/style/${url}`), e=>e)
+    })
+    files.assets.forEach(async url => {
+        const fs = require('fs')
+        var inStr = fs.createReadStream(devPath(`www/asset/${url}`));
+        var outStr = fs.createWriteStream(buildPath(`www/asset/${url}`));
+        inStr.pipe(outStr);
     })
 
     // index

@@ -1,16 +1,18 @@
 'home',
 `
-    <h1>Home ${Service.User.Count()}</h1>
-    <p>
-        <a href="#support">Support</a>
-    </p>
-    <input i0="counter" placeholder="loading...">
-    <br>
-    <b>Capper</b>
-    <form>
-        <input i0="cap">
-        <button i0="send">Send</button>
-    </form>
+    <div class="card">
+        <h1>Home ${Service.User.Count()}</h1>
+        <p>
+            <a href="#support" class="link">Support</a>
+        </p>
+        <input i0="counter" placeholder="loading..." class="input">
+        <form class="layer">
+            <b>Capper</b>
+            <br>
+            <input i0="cap" class="input">
+            <button i0="send" class="button">Send</button>
+        </form>
+    </div>
 `,
 (ui, props) => {
 

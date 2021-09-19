@@ -15,5 +15,4 @@ switch(command){
     case 'install': return  require(osPath('./cmd-install'))
     case 'run': return  require(osPath('./cmd-run'))
     case 'project': return  require(osPath('./cmd-project'))
-    case 'update': return  require(osPath('./cmd-update'))
 }

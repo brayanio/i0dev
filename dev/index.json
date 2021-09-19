@@ -9,5 +9,8 @@
         "#home": "home",
         "#support": "support"
     },
+    "styles": [
+        "https://tauruscss.blbbrayan.repl.co/export.css"
+    ],
     "node_packages": {}
 }

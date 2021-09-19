@@ -1,3 +1,5 @@
-let users = [{id: '$id'}]
+let users = [
+    {}
+]
 
 Service.User.Count = () => users.length

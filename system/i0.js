@@ -58,21 +58,11 @@ const element = (html, init, css) => {
 }
 
 // routing
-let routes, routeProps
-const transition = app => {
-    app.style.opacity = '0'
-    setTimeout(() => { 
-        app.style.opacity = '1' 
-        app.style.transition = '0.3s'
-        setTimeout(() => { app.style.transition = '0s' }, 300)
-    }, 50)
-}
-let app
+let routes, routeProps, app
 const loadRoute = () => {
     const route = routes[location.hash]
     if(route){
         app.innerHTML = ''
-        transition(app)
         app.appendChild(load(route, routeProps))
         routeProps = undefined
     }
@@ -80,8 +70,9 @@ const loadRoute = () => {
 const router = (obj) => {
     app = document.createElement('app')
     routes = obj
-    loadRoute(app)
     app.style.opacity = '0'
+    loadRoute(app)
+    app.style.opacity = '1'
     onhashchange = () => loadRoute()
     document.body.appendChild(app)
 }

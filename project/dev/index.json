@@ -1,7 +1,9 @@
 {
     "package": "new-i0-project",
-    "title": "New i0 Project",
     "port":	"4200",
+    "node_packages": {},
+    
+    "title": "New i0 Project",
     "target": "http://localhost:4200",
     "routes": {
         "": "home",
@@ -11,6 +13,5 @@
     },
     "styles": [
         "https://tauruscss.blbbrayan.repl.co/export.css"
-    ],
-    "node_packages": {}
+    ]
 }

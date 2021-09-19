@@ -1,9 +1,12 @@
 'home',
 `
     <div class="card">
-        <h1>Home ${Service.User.Count()}</h1>
+        <h1>Home</h1>
         <p>
             <a href="#support" class="link">Support</a>
+        </p>
+        <p>
+            Users Online: <b i0="userCount"></b>
         </p>
         <input i0="counter" placeholder="loading..." class="input">
         <form class="layer">
@@ -15,6 +18,8 @@
     </div>
 `,
 (ui, props) => {
+
+    ui.userCount.innerText = Service.User.Count()
 
     i0.load('counter-btn', 5, ui.counter)
 

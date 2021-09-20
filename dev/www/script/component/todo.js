@@ -1,13 +1,15 @@
 'todo',
 `
     <div class="layer flex space v-align">
-        <b class="header" i0="text"></b>
-        <div class="flex column center" i0="desc">
+        <div class="flex column center">
+            <b class="header" i0="text"></b>
+            <small i0="date" class="margin"></small>
+        </div>
+        <div class="flex v-align" i0="desc">
             <input type="checkbox" i0="isComplete">
-            <small i0="date"></small>
             <button class="button" i0="x">x</button>
         </div>
-        <div class="flex column center hidden" i0="confirm">
+        <div class="flex v-align hidden" i0="confirm">
             <button class="button" i0="remove">Remove</button>
             <button class="button" i0="cancel">Cancel</button>
         </div>

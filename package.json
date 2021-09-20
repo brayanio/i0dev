@@ -1,6 +1,6 @@
 {
   "name": "i0dev",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Create, build, and run i0 projects",
   "main": "index.js",
   "scripts": {

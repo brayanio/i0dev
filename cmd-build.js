@@ -199,7 +199,7 @@ const loadSystems = async files => {
         } else s = s.replace('$styles$', '')
         if(settings.scripts){
             let scriptText = ''
-            settings.scripts.forEach(src => scriptText += `<script defer src="${src}"></script>\n`)
+            settings.scripts.forEach(src => scriptText += `<script defer type="module" src="${src}"></script>\n`)
             s = s.replace('$scripts$', scriptText)
         } else s = s.replace('$scripts$', '')
         return s

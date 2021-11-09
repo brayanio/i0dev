@@ -12,6 +12,7 @@ const command = args[0]
 
 switch(command){
     case 'build': return require(osPath('./cmd-build'))
+    case 'firebase': return require(osPath('./cmd-firebase'))
     case 'install': return  require(osPath('./cmd-install'))
     case 'run': return  require(osPath('./cmd-run'))
     case 'project': return  require(osPath('./cmd-project'))

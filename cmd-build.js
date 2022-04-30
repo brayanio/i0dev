@@ -1,5 +1,7 @@
 let fn
 const fs = require('fs').promises
+const FS = require('fs')
+const path = require("path")
 const START = new Date()
 
 const isWin = process.platform === "win32";
@@ -26,6 +28,7 @@ const DevPaths = {
     Component: Path.Dev + osPath('/www/script/component'),
     Page: Path.Dev + osPath('/www/script/page'),
     Service: Path.Dev + osPath('/www/script/service'),
+    Import: Path.Dev + osPath('/www/script/import'),
     Style: Path.Dev + osPath('/www/style'),
     Asset: Path.Dev + osPath('/www/asset')
 }
@@ -41,6 +44,7 @@ let loadWWW = async () => {
     const components = await fs.readdir(DevPaths.Component)
     const pages = await fs.readdir(DevPaths.Page)
     const services = await fs.readdir(DevPaths.Service)
+    const imports = await fs.readdir(DevPaths.Import)
     const styles = await fs.readdir(DevPaths.Style)
     const assets = await fs.readdir(DevPaths.Asset)
     console.clear()
@@ -48,6 +52,7 @@ let loadWWW = async () => {
     console.log('pages', pages.length)
     console.log('components', components.length)
     console.log('services', services.length)
+    console.log('imports', imports.length)
     console.log('styles', styles.length)
     console.log('assets', assets.length)
 
@@ -78,7 +83,7 @@ let loadWWW = async () => {
             components: finalComponents, 
             pages: finalPages, 
             services: finalServices,
-            styles, assets
+            styles, assets, imports
         } : {error: 'loading'}
         return {error: 'loading'}
     }
@@ -86,7 +91,7 @@ let loadWWW = async () => {
         components: finalComponents, 
         pages: finalPages, 
         services: finalServices,
-        styles, assets
+        styles, assets, imports
     }
 }
 
@@ -165,6 +170,7 @@ const loadBuild = async files => {
     await fs.mkdir(buildPath('www/script/component'))
     await fs.mkdir(buildPath('www/script/page'))
     await fs.mkdir(buildPath('www/script/service'))
+    await fs.mkdir(buildPath('www/script/import'))
     await loadSystems(files)
     files.components.forEach(component => {
         fs.appendFile(buildPath(`www/script/component/${component.url}`), component.value)
@@ -183,6 +189,17 @@ const loadBuild = async files => {
 const copyAndPlace = async (filePath, buildPath, aug) => {
     const str = await fs.readFile(filePath)
     await fs.appendFile(buildPath, aug(str.toString()))
+}
+
+const copyFolder = async (from, to) => {
+    if (FS.existsSync(to)) FS.rmdirSync(to, { recursive: true })
+    FS.mkdirSync(to)
+    FS.readdirSync(from).forEach(element => {
+        if (FS.lstatSync(path.join(from, element)).isFile()) 
+            FS.copyFileSync(path.join(from, element), path.join(to, element))
+        else 
+            copyFolder(path.join(from, element), path.join(to, element))
+    })
 }
 
 const loadSystems = async files => {
@@ -208,12 +225,9 @@ const loadSystems = async files => {
     files.styles.forEach(async url => {
         await copyAndPlace(devPath(`www/style/${url}`), buildPath(`www/style/${url}`), e=>e)
     })
-    files.assets.forEach(async url => {
-        const fs = require('fs')
-        var inStr = fs.createReadStream(devPath(`www/asset/${url}`));
-        var outStr = fs.createWriteStream(buildPath(`www/asset/${url}`));
-        inStr.pipe(outStr);
-    })
+
+    await copyFolder(devPath(`www/asset`), buildPath(`www/asset`))
+    await copyFolder(devPath(`www/script/import`), buildPath(`www/script/import`))
 
     // index
     let index = ''

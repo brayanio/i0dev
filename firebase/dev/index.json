@@ -1,0 +1,25 @@
+{
+    "package": "new-i0-project",
+    "port":	"4200",
+    "node_packages": {
+        "firebase-admin": "9.12.0"
+    },
+    
+    "title": "New i0 Project",
+    "target": "http://localhost:4200",
+    "routes": {
+        "": "home",
+        "#": "home",
+        "#home": "home",
+        "#support": "support"
+    },
+    "scripts": [
+        "https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js",
+        "https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js",
+        "https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js",
+        "https://www.gstatic.com/firebasejs/8.10.0/firebase-analytics.js"
+    ],
+    "styles": [
+        "https://tauruscss.blbbrayan.repl.co/export.css"
+    ]
+}

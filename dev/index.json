@@ -9,6 +9,11 @@
         "#home": "home",
         "#support": "support"
     },
+    "modules": [ 
+        "support", 
+        ["support", "Todo"]
+     ],
+    "env": {},
     "styles": [
         "https://tauruscss.blbbrayan.repl.co/export.css"
     ],

@@ -1,11 +1,12 @@
 const firebaseConfig = {
-    apiKey: "AIzaSyCdJPZ19vDUYX8fUSpeTDc7TZTB2CEpAhU",
-    authDomain: "portfolio-37dfe.firebaseapp.com",
-    databaseURL: "https://portfolio-37dfe.firebaseio.com",
-    projectId: "portfolio-37dfe",
-    storageBucket: "portfolio-37dfe.appspot.com",
-    messagingSenderId: "51180410857",
-    appId: "1:51180410857:web:6194e5af844f29e7"
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: "",
+    measurementId: ""
 };
 
 // Initialize Firebase
@@ -57,14 +58,31 @@ Service.Firebase.SignOut = async () => {
     return res
 }
 
-Service.Firebase.Get = async user => {
+Service.Firebase.Get = async path => {
     const db = firebase.database()
-    const res = await db.ref('user/' + user.uid).once('value')
+    const res = await db.ref(path).once('value')
     return res.val()
 }
 
-Service.Firebase.Set = async (user, obj) => {
+Service.Firebase.On = async (path, fn) => {
     const db = firebase.database()
-    const res = await db.ref('user/' + user.uid).set(obj)
+    const res = await db.ref(path).on('value', snap => fn(snap.val()) )
+    return () => Service.Firebase.Off(path)
+}
+
+Service.Firebase.Off = async path => {
+    const db = firebase.database()
+    const res = await db.ref(path).off()
+}
+
+Service.Firebase.Set = async (path, obj) => {
+    const db = firebase.database()
+    const res = await db.ref(path).set(obj)
     return res
+}
+
+Service.Firebase.Query = async (path, query) => {
+    const db = firebase.database()
+    let ref = await db.ref(path)
+    return await query(ref)
 }

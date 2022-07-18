@@ -6,37 +6,23 @@ let guid = (r, v) =>
 // main ui
 let components = {}
 
-const _applyStyle = (el, css) => {
-    if(css)
-        Object.keys(css).forEach(query => {
-            const rules = Object.keys(css[query])
-            el.querySelectorAll(query).forEach(selectedElement => 
-                rules.forEach(style => 
-                    selectedElement.style[style] = css[query][style]
-                )
-            )
-        })
-}
-
 const _geti0 = (clone, ui) => {
     Array.from(clone.querySelectorAll('[i0]')).forEach(el => {
-        if(el.getAttribute('i0-nugget')) return null
         ui[el.getAttribute('i0')] = el
         el.removeAttribute('i0')
     })
 }
 
-const obj = (id, html, init, css) => {
+const obj = (id, html, init) => {
     const template = document.createElement('template')
     template.innerHTML = html
-    components[id] = {template, init, css}
+    components[id] = {template, init}
 }
 
 const load = (id, props, el) => {
     if(components[id]){
         const clone = components[id].template.content.cloneNode(true)
         const ui = {}
-        _applyStyle(clone, components[id].css)
         _geti0(clone, ui)
         if(components[id].init)
             components[id].init(ui, props)
@@ -46,24 +32,27 @@ const load = (id, props, el) => {
     }
 }
 
-const element = (html, init, css) => {
+const element = (html, init) => {
     const template = document.createElement('template')
     template.innerHTML = html
     const clone = template.content.cloneNode(true)
     const ui = {}
-    _applyStyle(clone, css)
     _geti0(clone, ui)    
     if(init) init(ui)
     return clone
 }
 
 // routing
-let routes, routeProps, app
+let routes, routeProps, app, routeNav = {}, saveRoute = false
 const loadRoute = () => {
     const route = routes[location.hash]
     if(route){
         app.innerHTML = ''
-        app.appendChild(load(route, routeProps))
+        let el
+        if(!saveRoute) el = load(route, routeProps)
+        else if(routeNav[route]) el = routeNav
+        else el = routeNav[route] = load(route, routeProps)
+        app.appendChild(el)
         routeProps = undefined
     }
 }
@@ -81,6 +70,7 @@ const toRoute = (hash, props) => {
     if(location.hash === hash) loadRoute()
     else location.hash = hash
 }
+const saveRoutes = val => saveRoute = val
 
 // http
 let target = 'http://localhost:4200'
@@ -126,9 +116,9 @@ const emptybroadcast = name => broadcasts[name] = []
 
 // i0
 export default {
+    guid,
     obj, load, element,
-    router, toRoute,
+    router, toRoute, saveRoutes,
     fetch: onFetch, target: str => target = str,
-    broadcast, onbroadcast, emptybroadcast,
-    guid
+    broadcast, onbroadcast, emptybroadcast
 }

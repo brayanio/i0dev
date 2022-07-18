@@ -10,11 +10,11 @@ const osPath = path => isWin ? path.split('/').join('\\') : path
 /* all commands should be run from the dev folder except for the project command */
 
 const runPath = process.cwd()
-const last = runPath.substr(runPath.length - 4, 4)
+const last = runPath.substring(runPath.length - 4, 4)
 if(last !== '/dev' && last !== '\\dev')
     return console.error('! i0 error: Command must be ran within the dev folder.')
 
-const projectPath = runPath.substr(0, runPath.length - 4)
+const projectPath = runPath.substring(0, runPath.length - 4)
 
 const Path = {
     Global: __dirname,
@@ -106,7 +106,7 @@ const loadPage = async (url) => {
 
     // console.log('loadPage', devPath(`www/script/page/${url}`))
 
-    let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
+    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 4)
 
     return {value: final, url, name}
 }
@@ -122,7 +122,7 @@ const loadComponent = async (url) => {
 
     // console.log('loadComponent', devPath(`www/script/component/${url}`))
 
-    let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
+    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 4)
 
     return {value: final, url, name}
 }
@@ -138,7 +138,7 @@ const loadService = async (url) => {
 
     // console.log('loadService', devPath(`www/script/service/${url}`))
 
-    let name = url.substr(0, 1).toUpperCase() + url.substr(1, url.length - 4)
+    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 4)
 
     return {value: final, url, name}
 }
@@ -226,6 +226,7 @@ const loadSystems = async files => {
         await copyAndPlace(devPath(`www/style/${url}`), buildPath(`www/style/${url}`), e=>e)
     })
 
+    // await copyFolder(devPath(`www/style`), buildPath(`www/style`))
     await copyFolder(devPath(`www/asset`), buildPath(`www/asset`))
     await copyFolder(devPath(`www/script/import`), buildPath(`www/script/import`))
 
@@ -267,7 +268,7 @@ const loadServer = async files => {
     const services = await fs.readdir(devPath('server/service'))
     let servicesObj = {}
     services.forEach(url => {
-        servicesObj[url.substr(0,1).toUpperCase() + url.substr(1, url.length - 4)] = {}
+        servicesObj[url.substring(0,1).toUpperCase() + url.substring(1, url.length - 4)] = {}
     })
     fs.appendFile(buildPath('server/_service.js'), `module.exports = ${JSON.stringify(servicesObj)}`)
     services.forEach(async url => {

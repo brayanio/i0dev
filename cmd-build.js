@@ -10,9 +10,9 @@ const osPath = path => isWin ? path.split('/').join('\\') : path
 /* all commands should be run from the dev folder except for the project command */
 
 const runPath = process.cwd()
-const last = runPath.substring(runPath.length - 4, 4)
+const last = runPath.substring(runPath.length - 4, runPath.length)
 if(last !== '/dev' && last !== '\\dev')
-    return console.error('! i0 error: Command must be ran within the dev folder.')
+    return console.error('! i0 error: Command must be ran within the dev folder.', last)
 
 const projectPath = runPath.substring(0, runPath.length - 4)
 
@@ -106,7 +106,7 @@ const loadPage = async (url) => {
 
     // console.log('loadPage', devPath(`www/script/page/${url}`))
 
-    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 4)
+    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 3)
 
     return {value: final, url, name}
 }
@@ -122,7 +122,7 @@ const loadComponent = async (url) => {
 
     // console.log('loadComponent', devPath(`www/script/component/${url}`))
 
-    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 4)
+    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 3)
 
     return {value: final, url, name}
 }
@@ -138,7 +138,7 @@ const loadService = async (url) => {
 
     // console.log('loadService', devPath(`www/script/service/${url}`))
 
-    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 4)
+    let name = url.substring(0, 1).toUpperCase() + url.substring(1, url.length - 3)
 
     return {value: final, url, name}
 }
@@ -155,8 +155,8 @@ let interval = setInterval(async () => {
 
 const loadBuild = async files => {
     try{
-        await fs.rmdir(buildPath('www'), { recursive: true });
-        await fs.rmdir(buildPath('server'), { recursive: true });
+        await fs.rm(buildPath('www'), { recursive: true });
+        await fs.rm(buildPath('server'), { recursive: true });
         await fs.unlink(buildPath('index.js'));
         await fs.unlink(buildPath('package.json'));
     }catch(e){}
@@ -192,7 +192,7 @@ const copyAndPlace = async (filePath, buildPath, aug) => {
 }
 
 const copyFolder = async (from, to) => {
-    if (FS.existsSync(to)) FS.rmdirSync(to, { recursive: true })
+    if (FS.existsSync(to)) FS.rmSync(to, { recursive: true })
     FS.mkdirSync(to)
     FS.readdirSync(from).forEach(element => {
         if (FS.lstatSync(path.join(from, element)).isFile()) 
@@ -268,7 +268,7 @@ const loadServer = async files => {
     const services = await fs.readdir(devPath('server/service'))
     let servicesObj = {}
     services.forEach(url => {
-        servicesObj[url.substring(0,1).toUpperCase() + url.substring(1, url.length - 4)] = {}
+        servicesObj[url.substring(0,1).toUpperCase() + url.substring(1, url.length - 3)] = {}
     })
     fs.appendFile(buildPath('server/_service.js'), `module.exports = ${JSON.stringify(servicesObj)}`)
     services.forEach(async url => {

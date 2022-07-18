@@ -7,7 +7,7 @@ const osPath = path => isWin ? path.split('/').join('\\') : path
 /* all commands should be run from the dev folder except for the project command */
 
 const runPath = process.cwd() + ''
-const last = runPath.substring(runPath.length - 4, 4)
+const last = runPath.substring(runPath.length - 4, runPath.length)
 if(last !== '/dev' && last !== '\\dev')
     return console.error('i0 error: Command must be ran within the dev folder.')
 

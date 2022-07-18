@@ -47,11 +47,15 @@ let routes, routeProps, app, routeNav = {}, saveRoute = false
 const loadRoute = () => {
     const route = routes[location.hash]
     if(route){
-        app.innerHTML = ''
+        while(app.lastChild) app.removeChild(app.lastChild)
         let el
         if(!saveRoute) el = load(route, routeProps)
-        else if(routeNav[route]) el = routeNav
-        else el = routeNav[route] = load(route, routeProps)
+        else if(routeNav[route]) el = routeNav[route]
+        else {
+            const div = document.createElement('div')
+            div.appendChild(load(route, routeProps))
+            el = routeNav[route] = div
+        }
         app.appendChild(el)
         routeProps = undefined
     }
